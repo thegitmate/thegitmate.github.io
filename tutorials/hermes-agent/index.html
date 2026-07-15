@@ -148,13 +148,29 @@
 
   /* ---- footer ---- */
   footer{border-top:1px solid var(--line);padding:38px 0 70px;margin-top:20px}
-  .signoff{
-    font-family:var(--serif);font-size:clamp(20px,3vw,25px);line-height:1.35;
-    letter-spacing:-.005em;color:#F4F1EA;max-width:30em;margin:0 0 30px
+  .signoff-card{
+    background:linear-gradient(180deg,rgba(233,180,76,.07),rgba(233,180,76,.02));
+    border:1px solid rgba(233,180,76,.28);border-radius:14px;
+    padding:28px 28px 26px;margin:0 0 34px
   }
-  .signoff a{color:var(--gold);border-bottom:1px solid rgba(233,180,76,.3)}
-  .signoff a:hover{border-color:var(--gold)}
-  .signoff .hand{font-style:italic;color:var(--gold)}
+  .signoff-card .eyebrow{margin:0 0 14px}
+  .signoff-lead{
+    font-family:var(--sans);font-weight:500;font-size:clamp(18px,2.6vw,21px);
+    line-height:1.4;color:#F4F1EA;margin:0 0 6px;letter-spacing:0
+  }
+  .signoff-lead b{color:var(--gold);font-weight:600}
+  .signoff-sub{font-family:var(--sans);font-size:15px;color:var(--muted);margin:0 0 20px}
+  .signoff-links{display:flex;flex-wrap:wrap;gap:12px}
+  .chip{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--sans);font-size:15px;font-weight:500;color:var(--text);
+    background:var(--ink-3);border:1px solid var(--line);border-radius:10px;
+    padding:11px 16px;transition:.15s
+  }
+  .chip:hover{border-color:var(--gold);color:#F4F1EA;transform:translateY(-1px)}
+  .chip .ic{font-size:16px;line-height:1}
+  .chip .at{color:var(--gold);font-weight:600}
+  .chip .arw{color:var(--gold)}
   .links{display:flex;flex-wrap:wrap;gap:8px 26px;margin:0 0 22px}
   .links a{font-family:var(--mono);font-size:13px;border-bottom:0;color:var(--muted)}
   .links a:hover{color:var(--gold)}
@@ -281,7 +297,15 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
   </main>
 
   <footer>
-    <p class="signoff">This guide was built just for you by <span class="hand">Nathan</span>. More guides and tutorials on my Instagram <a href="https://instagram.com/buildwith.doa" target="_blank" rel="noopener">@buildwith.doa</a> — or get them straight to your inbox via <a href="https://buildwithdoa.kit.com/c0493b673d" target="_blank" rel="noopener">my newsletter</a>.</p>
+    <div class="signoff-card">
+      <p class="eyebrow">Close the loop</p>
+      <p class="signoff-lead">This guide was built just for you by <b>Nathan</b>.</p>
+      <p class="signoff-sub">More free guides and tutorials, straight from me — follow along:</p>
+      <div class="signoff-links">
+        <a class="chip" href="https://instagram.com/buildwith.doa" target="_blank" rel="noopener"><span class="ic">📸</span> Instagram <span class="at">@buildwith.doa</span></a>
+        <a class="chip" href="https://buildwithdoa.kit.com/c0493b673d" target="_blank" rel="noopener"><span class="ic">✉</span> Join the newsletter <span class="arw">→</span></a>
+      </div>
+    </div>
     <nav class="links">
       <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener">Hermes docs <span>↗</span></a>
       <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Hermes on GitHub <span>↗</span></a>
