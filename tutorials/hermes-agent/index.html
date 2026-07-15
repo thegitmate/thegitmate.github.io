@@ -51,8 +51,16 @@
   a:hover{border-color:var(--gold)}
   a:focus-visible,button:focus-visible{outline:2px solid var(--mercury);outline-offset:3px;border-radius:3px}
 
+  /* ---- top attribution ---- */
+  .topbar{
+    padding:16px 0 15px;border-bottom:1px solid var(--line-soft);
+    font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--faint)
+  }
+  .topbar a{color:var(--gold);border-bottom:0}
+  .topbar a:hover{color:#F4D07A}
+
   /* ---- hero ---- */
-  header{padding:88px 0 22px}
+  header{padding:60px 0 22px}
   .eyebrow{
     font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
     color:var(--gold);display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 26px
@@ -166,6 +174,8 @@
 </head>
 <body>
 <div class="wrap">
+
+  <p class="topbar">Guide brought to you by <a href="https://instagram.com/buildwith.doa" target="_blank" rel="noopener">@buildwith.doa</a></p>
 
   <header>
     <p class="eyebrow">Self-hosted <span class="dot"></span> Free <span class="dot"></span> ~15 min</p>
