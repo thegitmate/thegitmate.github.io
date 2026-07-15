@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Run your own Hermes agent — free, self-hosted, on Telegram</title>
-<meta name="description" content="A minimal field manual: install the Nous Hermes agent locally or on a VPS, wire it to Telegram, and run it on a free DeepSeek-V4 endpoint. ~15 minutes, £0.">
+<title>Run your own Hermes agent: free, self-hosted, on Telegram</title>
+<meta name="description" content="A minimal, step-by-step guide: install the Nous Hermes agent locally or on a VPS, wire it to Telegram, and run it on a free DeepSeek-V4 endpoint. ~15 minutes, £0.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -216,7 +216,7 @@
       <p>One line. The installer pulls every dependency (Python, Node, ripgrep, ffmpeg), clones the repo to <code>~/.hermes</code>, and drops a global <code>hermes</code> command. No <code>sudo</code>.</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
-        <pre><span class="c"># macOS or Linux — local box or a fresh VPS, same command</span>
+        <pre><span class="c"># macOS or Linux, local box or a fresh VPS, same command</span>
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
       </div>
       <p>Then run the wizard once to confirm the basics:</p>
@@ -224,7 +224,7 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
         <pre>hermes setup</pre>
       </div>
-      <p class="hint"><em>Stuck anywhere in setup? Ask Claude — paste the step you're on or the error you hit, and it'll walk you through it.</em></p>
+      <p class="hint"><em>Stuck anywhere in setup? Ask Claude. Paste the step you're on or the error you hit, and it'll walk you through it.</em></p>
     </section>
 
     <!-- STEP 02 -->
@@ -234,16 +234,14 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
       <h2>Point it at a free DeepSeek-V4</h2>
       <p>Hermes will call any OpenAI-compatible endpoint. When <code>base_url</code> is set it talks to that endpoint directly. Two free options right now (July 2026):</p>
 
-      <p class="tag">Option A — OpenCode Zen</p>
-      <p>Free <code>deepseek-v4-flash-free</code> and <code>big-pickle</code> while they're in preview. Grab a key from the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen dashboard</a>, then point Hermes at it:</p>
+      <p class="tag">Option A: OpenCode Zen</p>
+      <p>Free <code>deepseek-v4-flash-free</code> and <code>big-pickle</code> while they're in preview. Grab a key from the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen dashboard</a>, then run the model step of the setup. Choose your provider, pick <code>deepseek-v4-flash-free</code> (or <code>big-pickle</code>), and paste your key when the wizard asks for it. That's all, it's just part of the flow.</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
-        <pre>hermes config set model.base_url <span class="s">https://opencode.ai/zen/v1</span>
-hermes config set model.model <span class="s">deepseek-v4-flash-free</span>   <span class="c"># or: big-pickle</span>
-hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></pre>
+        <pre>hermes setup model</pre>
       </div>
 
-      <p class="tag">Option B — Nous Portal</p>
+      <p class="tag">Option B: Nous Portal</p>
       <p>Nous's own free tier, built in. One command runs the OAuth flow and hands you model access plus the tool gateway.</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
@@ -256,21 +254,22 @@ hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></p
       <span class="num">03</span>
       <p class="kicker">Messaging</p>
       <h2>Wire it to Telegram</h2>
-      <p>Hermes runs a <b>gateway</b> that bridges chat apps to the agent. We use <b>Telegram</b> here because it's the easiest to set up — but the same gateway also drives <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram" target="_blank" rel="noopener">WhatsApp, iMessage, Discord, Slack, Signal and many more</a>.</p>
+      <p>Hermes runs a <b>gateway</b> that bridges chat apps to the agent. We use <b>Telegram</b> here because it's the easiest to set up, but the same gateway also drives <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram" target="_blank" rel="noopener">WhatsApp, iMessage, Discord, Slack, Signal and many more</a>.</p>
       <ol class="plain">
         <li>In Telegram, message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> → send <code>/newbot</code> → pick a name and a username ending in <code>bot</code> → copy the token it gives you.</li>
         <li>Message <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a> → it replies with your numeric user ID.</li>
       </ol>
-      <p>Feed both to the gateway wizard — pick <b>Telegram</b>, paste the token and your ID:</p>
+      <p>Feed both to the gateway wizard: pick <b>Telegram</b>, paste the token and your ID:</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
         <pre>hermes gateway setup</pre>
       </div>
-      <p>Start it, then message your bot — it should answer within seconds:</p>
+      <p>Start it, then message your bot. It should answer within seconds:</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
         <pre>hermes gateway</pre>
       </div>
+      <p class="hint">Once your bot is live, you can give it a profile picture. <a href="https://i.pinimg.com/originals/be/60/25/be60256985c9ec94dff569b6e8ec7b57.png" target="_blank" rel="noopener">Here's a cool one.</a></p>
     </section>
 
     <!-- STEP 04 -->
@@ -278,17 +277,17 @@ hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></p
       <span class="num">04</span>
       <p class="kicker">Keep-alive</p>
       <h2>Make it survive reboots</h2>
-      <p>On a VPS you want it always on. This registers the gateway as a background service — <b>systemd</b> on Linux, <b>launchd</b> on macOS — that starts at boot.</p>
+      <p>On a VPS you want it always on. This registers the gateway as a background service (<b>systemd</b> on Linux, <b>launchd</b> on macOS) that starts at boot.</p>
       <div class="cmd">
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
         <pre>hermes gateway install</pre>
       </div>
-      <p>That's it — a self-hosted agent in your pocket, for free.</p>
+      <p>That's it. A self-hosted agent in your pocket, for free.</p>
 
       <div class="callout">
         <h3>⚠ One honest word on privacy</h3>
         <p>These free endpoints are <b>not privacy-first</b>. OpenCode Zen's own docs say free models may retain your prompts to improve the model. So don't feed them personal, client, or secret data.</p>
-        <p>For <b>building, coding, and everyday work</b> — which is most of what you'll actually do — they're fast, capable, and cost nothing. Want privacy for the sensitive stuff? Point Hermes at a local model or a paid private endpoint: same config, just a different <code>base_url</code>.</p>
+        <p>For <b>building, coding, and everyday work</b> (which is most of what you'll actually do) they're fast, capable, and cost nothing. Want privacy for the sensitive stuff? Point Hermes at a local model or a paid private endpoint: same config, just a different <code>base_url</code>.</p>
       </div>
     </section>
 
@@ -298,7 +297,7 @@ hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></p
     <div class="signoff-card">
       <p class="eyebrow">Close the loop</p>
       <p class="signoff-lead">This guide was built just for you by <b>Nathan</b>.</p>
-      <p class="signoff-sub">More free guides and tutorials, straight from me — follow along:</p>
+      <p class="signoff-sub">More free guides and tutorials, straight from me. Follow along:</p>
       <div class="signoff-links">
         <a class="chip" href="https://instagram.com/buildwith.doa" target="_blank" rel="noopener"><span class="ic">📸</span> Instagram <span class="at">@buildwith.doa</span></a>
         <a class="chip" href="https://buildwithdoa.kit.com/c0493b673d" target="_blank" rel="noopener"><span class="ic">✉</span> Join the newsletter <span class="arw">→</span></a>
@@ -310,7 +309,7 @@ hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></p
       <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen <span>↗</span></a>
       <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research <span>↗</span></a>
     </nav>
-    <p class="sig"><span class="glyph">☿</span>&nbsp; Hermes → Mercury → quicksilver. A messenger's field manual. Commands verified July 2026.</p>
+    <p class="sig">Commands verified July 2026.</p>
   </footer>
 
 </div>
