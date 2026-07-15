@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run your own Hermes agent — free, self-hosted, on Telegram</title>
+<meta name="description" content="A minimal field manual: install the Nous Hermes agent locally or on a VPS, wire it to Telegram, and run it on a free DeepSeek-V4 endpoint. ~15 minutes, £0.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0D1014;
+    --ink-2:#141A21;
+    --ink-3:#0A0D11;
+    --line:#232B35;
+    --line-soft:#1A212A;
+    --text:#E8EBF0;
+    --muted:#9AA4B2;
+    --faint:#6B7480;
+    --gold:#E9B44C;
+    --gold-dim:#B98E38;
+    --mercury:#9FE6E0;
+    --serif:"Instrument Serif",Georgia,serif;
+    --sans:"Inter",system-ui,-apple-system,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --wrap:720px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    letter-spacing:.005em;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background:
+      radial-gradient(1100px 520px at 78% -10%, rgba(233,180,76,.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 8%, rgba(159,230,224,.05), transparent 55%);
+    pointer-events:none;z-index:0;
+  }
+  .wrap{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:0 22px}
+  a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(233,180,76,.28);transition:border-color .15s,color .15s}
+  a:hover{border-color:var(--gold)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--mercury);outline-offset:3px;border-radius:3px}
+
+  /* ---- hero ---- */
+  header{padding:88px 0 22px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 26px
+  }
+  .eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--gold-dim)}
+  h1{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(44px,8.5vw,78px);line-height:.98;letter-spacing:-.01em;
+    margin:0 0 22px;color:#F4F1EA
+  }
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{font-size:clamp(17px,2.4vw,20px);color:var(--muted);max-width:34em;margin:0 0 8px}
+  .lede b{color:var(--text);font-weight:500}
+
+  /* ---- meta strip ---- */
+  .meta{
+    display:flex;flex-wrap:wrap;gap:0;margin:34px 0 6px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line)
+  }
+  .meta div{flex:1 1 120px;padding:14px 18px 14px 0;border-right:1px solid var(--line-soft)}
+  .meta div:last-child{border-right:0}
+  .meta dt{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 4px}
+  .meta dd{margin:0;font-size:15px;color:var(--text)}
+
+  /* ---- steps ---- */
+  main{padding:56px 0 40px}
+  .step{position:relative;padding:0 0 52px 60px}
+  .step::before{content:"";position:absolute;left:17px;top:8px;bottom:-8px;width:1px;background:var(--line)}
+  .step:last-of-type::before{display:none}
+  .num{
+    position:absolute;left:0;top:-6px;width:36px;height:36px;
+    display:grid;place-items:center;background:var(--ink);
+    font-family:var(--serif);font-size:24px;font-style:italic;color:var(--gold);
+    border:1px solid var(--line);border-radius:50%
+  }
+  .step h2{
+    font-family:var(--serif);font-weight:400;font-size:clamp(26px,4.4vw,34px);
+    line-height:1.08;letter-spacing:-.01em;margin:0 0 6px;color:#F4F1EA
+  }
+  .step .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mercury);margin:0 0 12px}
+  .step p{margin:0 0 16px;color:var(--muted)}
+  .step p b{color:var(--text);font-weight:500}
+  ol.plain{margin:0 0 18px;padding-left:20px;color:var(--muted)}
+  ol.plain li{margin:0 0 7px}
+  ol.plain code,p code,li code{
+    font-family:var(--mono);font-size:.86em;background:var(--ink-2);
+    border:1px solid var(--line-soft);border-radius:4px;padding:1px 6px;color:var(--text)
+  }
+  .tag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:22px 0 10px;display:flex;align-items:center;gap:10px}
+  .tag::before{content:"";width:14px;height:1px;background:var(--line)}
+
+  /* ---- command card ---- */
+  .cmd{
+    background:var(--ink-3);border:1px solid var(--line);border-radius:10px;
+    margin:0 0 16px;overflow:hidden
+  }
+  .cmd-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px 12px 9px 14px;border-bottom:1px solid var(--line-soft);background:rgba(255,255,255,.012)
+  }
+  .cmd-bar .label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+  .copy{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);background:transparent;border:1px solid var(--line);
+    border-radius:5px;padding:4px 10px;cursor:pointer;transition:.15s
+  }
+  .copy:hover{color:var(--text);border-color:var(--gold-dim)}
+  .copy.ok{color:var(--mercury);border-color:var(--mercury)}
+  pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.65;color:#DCE3EC}
+  pre .c{color:var(--faint)}
+  pre .k{color:var(--gold)}
+  pre .s{color:var(--mercury)}
+
+  /* ---- callout ---- */
+  .callout{
+    position:relative;margin:14px 0 0;padding:22px 24px 22px 26px;
+    background:linear-gradient(180deg,rgba(233,180,76,.055),rgba(233,180,76,.02));
+    border:1px solid rgba(233,180,76,.25);border-radius:10px
+  }
+  .callout::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;background:var(--gold);border-radius:3px}
+  .callout h3{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+  .callout p{margin:0 0 10px;color:var(--muted);font-size:15px}
+  .callout p:last-child{margin:0}
+  .callout b{color:var(--text);font-weight:500}
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--line);padding:34px 0 70px;margin-top:20px}
+  .links{display:flex;flex-wrap:wrap;gap:8px 26px;margin:0 0 22px}
+  .links a{font-family:var(--mono);font-size:13px;border-bottom:0;color:var(--muted)}
+  .links a:hover{color:var(--gold)}
+  .links a span{color:var(--faint)}
+  .sig{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em}
+  .sig .glyph{color:var(--gold);font-style:normal}
+
+  @media (max-width:560px){
+    header{padding:60px 0 14px}
+    .step{padding-left:48px}
+    .num{width:32px;height:32px;font-size:20px}
+    .step::before{left:15px}
+    .meta div{flex-basis:50%;border-right:0}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Self-hosted <span class="dot"></span> Free <span class="dot"></span> ~15 min</p>
+    <h1>Run your own<br><em>Hermes</em> agent.</h1>
+    <p class="lede"><b>Hermes</b> is Nous Research's self-improving AI agent. This is the short path: install it on your machine or a VPS, talk to it from <b>Telegram</b>, and run it on a <b>free DeepSeek-V4</b> endpoint.</p>
+    <dl class="meta">
+      <div><dt>Runs on</dt><dd>macOS · Linux · VPS</dd></div>
+      <div><dt>Model</dt><dd>DeepSeek-V4 (free)</dd></div>
+      <div><dt>Cost</dt><dd>£0 / month</dd></div>
+    </dl>
+  </header>
+
+  <main>
+
+    <!-- STEP 01 -->
+    <section class="step">
+      <span class="num">01</span>
+      <p class="kicker">Install</p>
+      <h2>Put Hermes on the machine</h2>
+      <p>One line. The installer pulls every dependency (Python, Node, ripgrep, ffmpeg), clones the repo to <code>~/.hermes</code>, and drops a global <code>hermes</code> command. No <code>sudo</code>.</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre><span class="c"># macOS or Linux — local box or a fresh VPS, same command</span>
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
+      </div>
+      <p>Then run the wizard once to confirm the basics:</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes setup</pre>
+      </div>
+    </section>
+
+    <!-- STEP 02 -->
+    <section class="step">
+      <span class="num">02</span>
+      <p class="kicker">Model</p>
+      <h2>Point it at a free DeepSeek-V4</h2>
+      <p>Hermes will call any OpenAI-compatible endpoint. When <code>base_url</code> is set it talks to that endpoint directly. Two free options right now (July 2026):</p>
+
+      <p class="tag">Option A — OpenCode Zen</p>
+      <p>Free <code>deepseek-v4-flash-free</code> and <code>big-pickle</code> while they're in preview. Grab a key from the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen dashboard</a>, then set two files.</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">~/.hermes/config.yaml</span><button class="copy" type="button">Copy</button></div>
+        <pre><span class="k">model:</span>
+  <span class="k">provider:</span> custom
+  <span class="k">base_url:</span> <span class="s">https://opencode.ai/zen/v1</span>
+  <span class="k">model:</span> <span class="s">deepseek-v4-flash-free</span>   <span class="c"># or: big-pickle</span></pre>
+      </div>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">~/.hermes/.env</span><button class="copy" type="button">Copy</button></div>
+        <pre><span class="k">OPENAI_API_KEY</span>=<span class="s">your-opencode-zen-key</span></pre>
+      </div>
+
+      <p class="tag">Option B — Nous Portal</p>
+      <p>Nous's own free tier, built in. One command runs the OAuth flow and hands you model access plus the tool gateway.</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes setup --portal</pre>
+      </div>
+    </section>
+
+    <!-- STEP 03 -->
+    <section class="step">
+      <span class="num">03</span>
+      <p class="kicker">Messaging</p>
+      <h2>Wire it to Telegram</h2>
+      <p>Hermes runs a <b>gateway</b> that bridges chat apps to the agent. Telegram is the easiest — <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram" target="_blank" rel="noopener">Discord, Slack, WhatsApp and Signal</a> work the same way.</p>
+      <ol class="plain">
+        <li>In Telegram, message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> → send <code>/newbot</code> → pick a name and a username ending in <code>bot</code> → copy the token it gives you.</li>
+        <li>Message <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a> → it replies with your numeric user ID.</li>
+      </ol>
+      <p>Feed both to the gateway wizard — pick <b>Telegram</b>, paste the token and your ID:</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes gateway setup</pre>
+      </div>
+      <p>Start it, then message your bot — it should answer within seconds:</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes gateway</pre>
+      </div>
+    </section>
+
+    <!-- STEP 04 -->
+    <section class="step">
+      <span class="num">04</span>
+      <p class="kicker">Keep-alive</p>
+      <h2>Make it survive reboots</h2>
+      <p>On a VPS you want it always on. This registers the gateway as a background service — <b>systemd</b> on Linux, <b>launchd</b> on macOS — that starts at boot.</p>
+      <div class="cmd">
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes gateway install</pre>
+      </div>
+      <p>That's it — a self-hosted agent in your pocket, for free.</p>
+
+      <div class="callout">
+        <h3>⚠ One honest word on privacy</h3>
+        <p>These free endpoints are <b>not privacy-first</b>. OpenCode Zen's own docs say free models may retain your prompts to improve the model. So don't feed them personal, client, or secret data.</p>
+        <p>For <b>building, coding, and everyday work</b> — which is most of what you'll actually do — they're fast, capable, and cost nothing. Want privacy for the sensitive stuff? Point Hermes at a local model or a paid private endpoint: same config, just a different <code>base_url</code>.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <nav class="links">
+      <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener">Hermes docs <span>↗</span></a>
+      <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Hermes on GitHub <span>↗</span></a>
+      <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen <span>↗</span></a>
+      <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research <span>↗</span></a>
+    </nav>
+    <p class="sig"><span class="glyph">☿</span>&nbsp; Hermes → Mercury → quicksilver. A messenger's field manual. Commands verified July 2026.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.cmd').querySelector('pre');
+      var text = pre.innerText.replace(/ /g,' ');
+      navigator.clipboard.writeText(text).then(function(){
+        var old = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.classList.add('ok');
+        setTimeout(function(){ btn.textContent = old; btn.classList.remove('ok'); }, 1600);
+      }).catch(function(){
+        btn.textContent = 'Copy failed';
+        setTimeout(function(){ btn.textContent = 'Copy'; }, 1600);
+      });
+    });
+  });
+</script>
+</body>
+</html>
