@@ -103,6 +103,8 @@
   .step .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mercury);margin:0 0 12px}
   .step p{margin:0 0 16px;color:var(--muted)}
   .step p b{color:var(--text);font-weight:500}
+  .step .hint{font-size:14.5px;color:var(--faint)}
+  .step .hint em{color:var(--muted)}
   ol.plain{margin:0 0 18px;padding-left:20px;color:var(--muted)}
   ol.plain li{margin:0 0 7px}
   ol.plain code,p code,li code{
@@ -147,7 +149,7 @@
   .callout b{color:var(--text);font-weight:500}
 
   /* ---- footer ---- */
-  footer{border-top:1px solid var(--line);padding:38px 0 70px;margin-top:20px}
+  footer{padding:0 0 70px;margin-top:4px}
   .signoff-card{
     background:linear-gradient(180deg,rgba(233,180,76,.07),rgba(233,180,76,.02));
     border:1px solid rgba(233,180,76,.28);border-radius:14px;
@@ -171,7 +173,7 @@
   .chip .ic{font-size:16px;line-height:1}
   .chip .at{color:var(--gold);font-weight:600}
   .chip .arw{color:var(--gold)}
-  .links{display:flex;flex-wrap:wrap;gap:8px 26px;margin:0 0 22px}
+  .links{display:flex;flex-wrap:wrap;gap:8px 26px;margin:0 0 22px;padding-top:34px;border-top:1px solid var(--line)}
   .links a{font-family:var(--mono);font-size:13px;border-bottom:0;color:var(--muted)}
   .links a:hover{color:var(--gold)}
   .links a span{color:var(--faint)}
@@ -222,6 +224,7 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
         <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
         <pre>hermes setup</pre>
       </div>
+      <p class="hint"><em>Stuck anywhere in setup? Ask Claude — paste the step you're on or the error you hit, and it'll walk you through it.</em></p>
     </section>
 
     <!-- STEP 02 -->
@@ -232,17 +235,12 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
       <p>Hermes will call any OpenAI-compatible endpoint. When <code>base_url</code> is set it talks to that endpoint directly. Two free options right now (July 2026):</p>
 
       <p class="tag">Option A — OpenCode Zen</p>
-      <p>Free <code>deepseek-v4-flash-free</code> and <code>big-pickle</code> while they're in preview. Grab a key from the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen dashboard</a>, then set two files.</p>
+      <p>Free <code>deepseek-v4-flash-free</code> and <code>big-pickle</code> while they're in preview. Grab a key from the <a href="https://opencode.ai/docs/zen/" target="_blank" rel="noopener">OpenCode Zen dashboard</a>, then point Hermes at it:</p>
       <div class="cmd">
-        <div class="cmd-bar"><span class="label">~/.hermes/config.yaml</span><button class="copy" type="button">Copy</button></div>
-        <pre><span class="k">model:</span>
-  <span class="k">provider:</span> custom
-  <span class="k">base_url:</span> <span class="s">https://opencode.ai/zen/v1</span>
-  <span class="k">model:</span> <span class="s">deepseek-v4-flash-free</span>   <span class="c"># or: big-pickle</span></pre>
-      </div>
-      <div class="cmd">
-        <div class="cmd-bar"><span class="label">~/.hermes/.env</span><button class="copy" type="button">Copy</button></div>
-        <pre><span class="k">OPENAI_API_KEY</span>=<span class="s">your-opencode-zen-key</span></pre>
+        <div class="cmd-bar"><span class="label">terminal</span><button class="copy" type="button">Copy</button></div>
+        <pre>hermes config set model.base_url <span class="s">https://opencode.ai/zen/v1</span>
+hermes config set model.model <span class="s">deepseek-v4-flash-free</span>   <span class="c"># or: big-pickle</span>
+hermes config set OPENAI_API_KEY <span class="s">your-opencode-zen-key</span></pre>
       </div>
 
       <p class="tag">Option B — Nous Portal</p>
@@ -258,7 +256,7 @@ curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</pre>
       <span class="num">03</span>
       <p class="kicker">Messaging</p>
       <h2>Wire it to Telegram</h2>
-      <p>Hermes runs a <b>gateway</b> that bridges chat apps to the agent. Telegram is the easiest — <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram" target="_blank" rel="noopener">Discord, Slack, WhatsApp and Signal</a> work the same way.</p>
+      <p>Hermes runs a <b>gateway</b> that bridges chat apps to the agent. We use <b>Telegram</b> here because it's the easiest to set up — but the same gateway also drives <a href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram" target="_blank" rel="noopener">WhatsApp, iMessage, Discord, Slack, Signal and many more</a>.</p>
       <ol class="plain">
         <li>In Telegram, message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> → send <code>/newbot</code> → pick a name and a username ending in <code>bot</code> → copy the token it gives you.</li>
         <li>Message <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a> → it replies with your numeric user ID.</li>
